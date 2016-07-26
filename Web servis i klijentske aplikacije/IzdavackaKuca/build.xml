@@ -1,0 +1,198 @@
+<project name="IzdavackaKuca" default="default" basedir=".">
+
+  <!-- PROPERTIES DEFINITION -->
+
+  <property name="tomcat.axis.context" value="axis" />
+  <property name="tomcat.home" value="C:\Program Files\Apache Software Foundation\Tomcat 5.5"/>
+
+  <property name="tomcat.host" value="localhost" />
+  <property name="tomcat.port" value="8080" />
+  
+  <property name="tomcat.username" value="admin" />
+  <property name="tomcat.password" value="admin" />
+
+  <property name="deploy.file" location="generated/src/kuca/deploy.wsdd" />
+  <property name="undeploy.file" location="generated/src/kuca/undeploy.wsdd" />
+
+  <property name="axis.home" value="C:\axis"  />
+  <property name="ant.home" value="C:\ant" />
+  
+  <property name="start.src.dir" location="start/src" />
+  <property name="start.classes.dir" location="start/classes" />
+  <property name="generated.src.dir" location="generated/src" />
+  <property name="generated.classes.dir" location="generated/classes" />
+
+  <property name="demo.src.dir" location="demo_client/src" />
+  <property name="demo.classes.dir" location="demo_client/classes" />
+  <property name="demo.proxies.dir" location="demo_client/proxies" />
+
+  <property name="src.dir" location="src" />
+  <property name="classes.dir" location="classes" />
+  <property name="wsdl.url"  value="Metode.wsdl"/>
+  
+  <property name="namespace" value="urn:kuca"/>
+  <property name="package" value="kuca"/>
+  <property name="classname" value="Metode"/>
+  <property name="service.location" value="http://localhost:8080/axis/services/Metode"/>
+  
+  <property name="webapp.folder.name" value="Knjige"/>
+  <property name="jsp.dir" location="jsp" />
+  
+  <property name="rdf.dir" location="rdf" />
+  
+   <!--  CLASSPATHS DEFINITON -->
+   
+  <path id="catalina-ant.classpath">  	
+  	<pathelement location="${tomcat.home}\server\lib\catalina-ant.jar" />
+  </path>
+
+  <path id="parsers.classpath">  	
+		<pathelement location="${axis.home}\lib\xercesImpl.jar" />
+  	<pathelement location="${axis.home}\lib\xml-apis.jar" />
+  </path>
+
+  <path id="axis.classpath">  	
+  	<fileset dir="${axis.home}/lib">
+			<include name="*.jar" />
+  	</fileset>
+  	<path refid="parsers.classpath" />
+  </path>
+  
+  <path id="run.classpath">  	
+  	<fileset dir="${axis.home}/lib">
+    	<include name="*.jar" />
+  	</fileset>
+  	<path refid="parsers.classpath" />
+  	<pathelement location="${demo.classes.dir}" />
+		<pathelement location="${demo.proxies.dir}" />
+  </path>
+    
+  <!-- TASKS DEFINITIONS -->
+
+  <taskdef name="reload" classname="org.apache.catalina.ant.ReloadTask"  classpathref="catalina-ant.classpath" /> 
+  <taskdef resource="axis-tasks.properties" classpath="${start.classes.dir}" classpathref="axis.classpath"/>
+
+  <!-- TARGETS DEFINITIONS -->
+      
+  <target name="default">
+  	<echo>
+  	The target to be executed must be identified: ant [target]
+  	[target]:
+	- compileStart
+  	- java2wsdl
+  	- wsdl2java
+  	- compile
+	- copy-to-proxies
+  	- copy-to-tomcat
+	- copy-rdf
+  	- deploy
+	- compileDemo
+  	- runDemo
+	- copy-jsp-to-tomcat
+  	</echo>
+  </target>
+ 
+	<target name="compileStart">
+		<mkdir dir="${start.classes.dir}"/>
+		<javac srcdir="${start.src.dir}" destdir="${start.classes.dir}" /> 
+	</target>
+	
+	<target name="java2wsdl"> 
+		<axis-java2wsdl 
+				output="${wsdl.url}"
+				className="${package}.${classname}"
+				namespace="${namespace}"
+				location="${service.location}">
+			<mapping namespace="${namespace}" package="${package}"/>
+		</axis-java2wsdl>
+	</target>
+
+	<target name="wsdl2java">
+		<axis-wsdl2java
+				url="${wsdl.url}"
+				output="${generated.src.dir}"
+        deployscope="session"
+        serverSide="yes"
+        skeletonDeploy="yes"
+        noimports="no"
+        verbose="no"
+        testcase="no">
+			<mapping namespace="${namespace}" package="${package}"/>
+		</axis-wsdl2java>
+	</target>
+
+	<target name="compile" >
+		<mkdir dir="${generated.classes.dir}"/>
+		<javac srcdir="${generated.src.dir}" destdir="${generated.classes.dir}" classpathref="axis.classpath"/>
+	</target>
+  
+	<target name="copy-to-proxies" >
+		<copy todir="${demo.proxies.dir}">
+			<fileset dir="${generated.classes.dir}" />
+		</copy>
+	</target>
+
+	<target name="copy-to-tomcat">
+		<copy todir="${tomcat.home}\webapps\${tomcat.axis.context}\WEB-INF\classes">
+			<fileset dir="${generated.classes.dir}"/>
+		</copy>
+		<antcall target="reload"/>  	
+	</target>
+  
+  	<target name="copy-rdf" >
+		<copy todir="${tomcat.home}">
+			<fileset dir="${rdf.dir}" />
+		</copy>
+	</target>
+  
+  <target name="copy-jsp-to-tomcat">
+  	<copy todir="${tomcat.home}\webapps\ROOT\WEB-INF\lib">
+			<fileset dir="${axis.home}/lib">
+				<include name="*.jar" />
+			</fileset>
+  	</copy>
+	<copy todir="${tomcat.home}\webapps\ROOT\WEB-INF\classes">
+			<fileset dir="${demo.proxies.dir}" />
+  	</copy>
+	
+	<mkdir dir="${tomcat.home}\webapps\ROOT\${webapp.folder.name}"/>
+	<copy todir="${tomcat.home}\webapps\ROOT\${webapp.folder.name}">
+    		<fileset dir="${jsp.dir}"/>
+  	</copy>
+  	<antcall target="reload"/>  	
+  </target>  
+
+  <target name="reload">
+		<echo message="Reloading AXIS services..."/>
+		<reload
+       	url="http://${tomcat.host}:${tomcat.port}/manager" 
+        username="${tomcat.username}" 
+        password="${tomcat.password}" 
+        path="/${tomcat.axis.context}" 
+    />
+	</target>
+  
+	<target name="deploy">  	
+		<java classname="org.apache.axis.client.AdminClient">
+			<arg value="${deploy.file}"/>	
+			<classpath refid="axis.classpath"/>	
+		</java>
+  </target>
+
+  <target name="undeploy">
+		<java classname="org.apache.axis.client.AdminClient">
+			<arg value="${undeploy.file}"/>	
+			<classpath refid="axis.classpath"/>			
+		</java>
+  </target>
+
+  <target name="compileDemo" >
+		<mkdir dir="${demo.classes.dir}"/>
+		<javac srcdir="${demo.src.dir}" destdir="${demo.classes.dir}" classpath="${demo.proxies.dir}" classpathref="axis.classpath"/>
+  </target>
+  
+  <target name="runDemo">
+		<java classname="demo.Demo" dir = "${demo.classes.dir}" classpathref="run.classpath" fork = "true">
+		</java>
+  </target>
+</project>

@@ -1,0 +1,20 @@
+POKRETANJE PROGRAMA
+
+Kopirati direktorijum „IzdavackaKuca“ iz direktorijuma „Web servis i klijentske aplikacije“ u „C:\“. Zatim se iz konzole pozicionirati na direktorijum „C:\IzdavackaKuca” i zadavati sledece komande:
+
+1.ant compileStart
+2.ant java2wsdl
+3.ant wsdl2java
+4.Rucno kopirati datoteke: „Sax.java“ i „Dom.java“ iz direktorijuma „start\src\kuca“ u direktorijum „generated\src\kuca“
+5.Dodati telo funkcijama u datoteci „MetodeSoapBindingImpl.java“ u direktorijumu „generated\src\kuca“
+6.ant compile
+7.ant copy-to-proxies (kopira generisane klase u proxies direktorijum Swing aplikacije)
+8.ant copy-to-tomcat
+9.ant copy-rdf (kopira RDF u „C:\Program Files\Apache Software Foundation\Tomcat 5.5“)
+10.ant deploy
+11.ant copy-jsp-to-tomcat (zatim otvoriti http://localhost:8080/Knjige/)
+12.ant compileDemo
+13.ant runDemo (pokrece se Swing klijent)
+
+Napomena:
+Za validaciju RDF koda i generisanje grafa korišcen je zvanicni W3C RDF validator dostupan na adresi http://www.w3.org/RDF/Validator/

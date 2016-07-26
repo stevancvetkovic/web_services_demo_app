@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	xmlns:izd="http://www.izdavacke-kuce.rs/izd#">
+
+	<izd:Autor rdf:about="MM">
+		<!--<rdf:type rdf:resource="Autor"/>-->
+		<izd:Ime>Milan</izd:Ime>
+		<izd:Prezime>Milanovic</izd:Prezime>
+		<izd:Liste>
+			<rdf:Seq rdf:ID="MML">
+            	<rdf:li rdf:resource="Rat i mir"/>
+            	<rdf:li rdf:resource="Orlovi rano lete"/>
+        	</rdf:Seq>
+		</izd:Liste>
+	</izd:Autor>
+
+	<izd:Autor rdf:about="JD">
+		<!--<rdf:type rdf:resource="Autor"/>-->
+		<izd:Ime>Jovan</izd:Ime>
+		<izd:Prezime>Ducic</izd:Prezime>
+		<izd:Liste>
+			<rdf:Seq rdf:ID="JDL">
+            	<rdf:li rdf:resource="Pesme"/>
+            	<rdf:li rdf:resource="Moje pripovetke"/>
+        	</rdf:Seq>
+		</izd:Liste>
+	</izd:Autor>
+
+	<rdf:Description
+		rdf:about="Politika">
+	  	<izd:Lokacija>Beograd</izd:Lokacija>
+	  	<izd:Telefon>011335938</izd:Telefon>
+	</rdf:Description>
+
+	<rdf:Description
+		rdf:about="Borba">
+	  	<izd:Lokacija>Lajkovac</izd:Lokacija>
+	  	<izd:Telefon>014859324</izd:Telefon>
+	</rdf:Description>
+
+	<izd:Knjiga rdf:about="Rat i mir">
+		<!--<rdf:type rdf:resource="Knjiga"/>-->
+		<izd:kuca rdf:resource="Politika"/>
+		<izd:BrojStrana>265</izd:BrojStrana>
+		<izd:ISBN>979923132</izd:ISBN>
+		<izd:Opis>Odlicna knjiga.</izd:Opis>
+		<izd:Ocena>8</izd:Ocena>
+	</izd:Knjiga>
+
+	<izd:Knjiga rdf:about="Orlovi rano lete">
+		<!--<rdf:type rdf:resource="Knjiga"/>-->
+		<izd:kuca rdf:resource="Politika"/>
+		<izd:BrojStrana>621</izd:BrojStrana>
+		<izd:ISBN>857678892</izd:ISBN>
+		<izd:Opis>Zanimljiva knjiga.</izd:Opis>
+		<izd:Ocena>9</izd:Ocena>
+	</izd:Knjiga>
+
+	<izd:Knjiga rdf:about="Pesme">
+		<!--<rdf:type rdf:resource="Knjiga"/>-->
+		<izd:kuca rdf:resource="Borba"/>
+		<izd:BrojStrana>383</izd:BrojStrana>
+		<izd:ISBN>852174286</izd:ISBN>
+		<izd:Opis>Neke pesme.</izd:Opis>
+		<izd:Ocena>5</izd:Ocena>
+	</izd:Knjiga>
+
+	<izd:Knjiga rdf:about="Moje pripovetke">
+		<!--<rdf:type rdf:resource="Knjiga"/>-->
+		<izd:kuca rdf:resource="Borba"/>
+		<izd:BrojStrana>953</izd:BrojStrana>
+		<izd:ISBN>977678654</izd:ISBN>
+		<izd:Opis>Dobra knjiga.</izd:Opis>
+		<izd:Ocena>7</izd:Ocena>
+	</izd:Knjiga>
+</rdf:RDF>
